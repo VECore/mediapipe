@@ -17,6 +17,9 @@ type: "FaceDetectionFrontGpu"
 # GPU image. (GpuBuffer)
 input_stream: "IMAGE:image"
 
+# gpu_origin. (int)
+input_side_packet: "gpu_origin"
+
 # Detected faces. (std::vector<Detection>)
 # NOTE: there will not be an output packet in the DETECTIONS stream for this
 # particular timestamp if none of faces detected. However, the MediaPipe
@@ -40,6 +43,7 @@ node: {
   input_stream: "IMAGE:multi_backend_image"
   output_stream: "TENSORS:input_tensors"
   output_stream: "MATRIX:transform_matrix"
+  input_side_packet: "gpu_origin"
   options: {
     [mediapipe.ImageToTensorCalculatorOptions.ext] {
       output_tensor_width: 128

@@ -26,6 +26,8 @@ input_stream: "IMAGE:image"
 # Max number of faces to detect/track. (int)
 input_side_packet: "NUM_FACES:num_faces"
 
+input_side_packet: "gpu_origin"
+
 # Collection of detected/predicted faces, each represented as a list of 468 face
 # landmarks. (std::vector<NormalizedLandmarkList>)
 # NOTE: there will not be an output packet in the LANDMARKS stream for this
@@ -91,6 +93,7 @@ node {
 node {
   calculator: "FaceDetectionFrontGpu"
   input_stream: "IMAGE:gated_image"
+  input_side_packet: "gpu_origin"
   output_stream: "DETECTIONS:all_face_detections"
 }
 
@@ -186,6 +189,7 @@ node {
   calculator: "FaceLandmarkGpu"
   input_stream: "IMAGE:landmarks_loop_image"
   input_stream: "ROI:face_rect"
+  input_side_packet: "gpu_origin"
   output_stream: "LANDMARKS:face_landmarks"
 }
 

@@ -21,6 +21,8 @@ input_stream: "IMAGE:image"
 # (NormalizedRect)
 input_stream: "ROI:roi"
 
+input_side_packet: "gpu_origin"
+
 # 468 face landmarks within the given ROI. (NormalizedLandmarkList)
 # NOTE: if a face is not present within the given ROI, for this particular
 # timestamp there will not be an output packet in the LANDMARKS stream. However,
@@ -33,6 +35,7 @@ node: {
   calculator: "ImageToTensorCalculator"
   input_stream: "IMAGE_GPU:image"
   input_stream: "NORM_RECT:roi"
+  input_side_packet: "gpu_origin"
   output_stream: "TENSORS:input_tensors"
   options: {
     [mediapipe.ImageToTensorCalculatorOptions.ext] {

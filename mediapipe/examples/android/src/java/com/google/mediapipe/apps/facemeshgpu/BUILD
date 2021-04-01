@@ -61,3 +61,18 @@ android_binary(
         "//mediapipe/java/com/google/mediapipe/framework:android_framework",
     ],
 )
+
+
+cc_binary(
+    name = "libmediapipe.so",
+    linkshared = 1,
+    linkstatic = 1,
+    deps = [
+        "//mediapipe/graphs/face_mesh:mobile_calculators",
+        "//mediapipe/calculators/core:packet_presence_calculator",
+        "//mediapipe/framework/port:parse_text_proto",
+    ],
+    linkopts = [
+        "-Wl,-soname,libmediapipe.so",
+    ],
+)

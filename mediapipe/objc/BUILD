@@ -53,8 +53,8 @@ MEDIAPIPE_IOS_HDRS = [
 
 objc_library(
     name = "mediapipe_framework_ios",
-    srcs = MEDIAPIPE_IOS_SRCS,
-    hdrs = MEDIAPIPE_IOS_HDRS,
+    # srcs = MEDIAPIPE_IOS_SRCS,
+    # hdrs = MEDIAPIPE_IOS_HDRS,
     copts = [
         "-Wno-shorten-64-to-32",
         "-std=c++17",
@@ -75,7 +75,7 @@ objc_library(
         "//mediapipe/framework/port:status",
         "//mediapipe/framework/port:statusor",
         "//mediapipe/framework/port:threadpool",
-        "//mediapipe/gpu:MPPGraphGPUData",
+        # "//mediapipe/gpu:MPPGraphGPUData",
         "//mediapipe/gpu:gl_base",
         "//mediapipe/gpu:gpu_buffer",
         "//mediapipe/gpu:gpu_shared_data_internal",

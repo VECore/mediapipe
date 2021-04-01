@@ -134,8 +134,8 @@ class ImageToTensorCalculator : public Node {
   MEDIAPIPE_NODE_CONTRACT(kIn, kInGpu, kInNormRect, kOutTensors,
                           kOutLetterboxPadding, kOutMatrix);
 
-  static absl::Status UpdateContract(CalculatorContract* cc) {
-    const auto& options =
+  static absl::Status UpdateContract(CalculatorContract *cc) {
+    const auto &options =
         cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
 
     RET_CHECK(options.has_output_tensor_float_range())
@@ -150,6 +150,11 @@ class ImageToTensorCalculator : public Node {
 
     RET_CHECK(kIn(cc).IsConnected() ^ kInGpu(cc).IsConnected())
         << "One and only one of IMAGE and IMAGE_GPU input is expected.";
+
+    // Optional input side packet that determines 'gpu_origin'
+    if (cc->InputSidePackets().NumEntries() > 0) {
+      cc->InputSidePackets().Index(0).Set<int>();
+    }
 
 #if MEDIAPIPE_DISABLE_GPU
     if (kInGpu(cc).IsConnected()) {
@@ -167,17 +172,24 @@ class ImageToTensorCalculator : public Node {
     return absl::OkStatus();
   }
 
-  absl::Status Open(CalculatorContext* cc) {
+  absl::Status Open(CalculatorContext *cc) {
     options_ = cc->Options<mediapipe::ImageToTensorCalculatorOptions>();
     output_width_ = options_.output_tensor_width();
     output_height_ = options_.output_tensor_height();
     range_min_ = options_.output_tensor_float_range().min();
     range_max_ = options_.output_tensor_float_range().max();
 
+    // Override `min_size` if passed as side packet.
+    if (cc->InputSidePackets().NumEntries() > 0 &&
+        !cc->InputSidePackets().Index(0).IsEmpty()) {
+      int gpu_origin = cc->InputSidePackets().Index(0).Get<int>();
+      options_.set_gpu_origin(mediapipe::GpuOrigin_Mode(gpu_origin));
+    }
+
     return absl::OkStatus();
   }
 
-  absl::Status Process(CalculatorContext* cc) {
+  absl::Status Process(CalculatorContext *cc) {
     if ((kIn(cc).IsConnected() && kIn(cc).IsEmpty()) ||
         (kInGpu(cc).IsConnected() && kInGpu(cc).IsEmpty())) {
       // Timestamp bound update happens automatically.
@@ -254,21 +266,21 @@ class ImageToTensorCalculator : public Node {
   }
 
   absl::StatusOr<std::shared_ptr<const mediapipe::Image>> GetInputImage(
-      CalculatorContext* cc) {
+      CalculatorContext *cc) {
     if (kIn(cc).IsConnected()) {
-      const auto& packet = kIn(cc).packet();
+      const auto &packet = kIn(cc).packet();
       return kIn(cc).Visit(
-          [&packet](const mediapipe::Image&) {
+          [&packet](const mediapipe::Image &) {
             return SharedPtrWithPacket<mediapipe::Image>(packet);
           },
-          [&packet](const mediapipe::ImageFrame&) {
+          [&packet](const mediapipe::ImageFrame &) {
             return std::make_shared<const mediapipe::Image>(
                 std::const_pointer_cast<mediapipe::ImageFrame>(
                     SharedPtrWithPacket<mediapipe::ImageFrame>(packet)));
           });
     } else {  // if (kInGpu(cc).IsConnected())
 #if !MEDIAPIPE_DISABLE_GPU
-      const GpuBuffer& input = *kInGpu(cc);
+      const GpuBuffer &input = *kInGpu(cc);
       // A shallow copy is okay since the resulting 'image' object is local in
       // Process(), and thus never outlives 'input'.
       return std::make_shared<const mediapipe::Image>(input);
@@ -279,7 +291,7 @@ class ImageToTensorCalculator : public Node {
     }
   }
 
-  absl::Status InitConverterIfNecessary(CalculatorContext* cc, bool use_gpu) {
+  absl::Status InitConverterIfNecessary(CalculatorContext *cc, bool use_gpu) {
     // Lazy initialization of the GPU or CPU converter.
     if (use_gpu) {
       if (!gpu_converter_) {
