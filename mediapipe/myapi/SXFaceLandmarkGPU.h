@@ -13,24 +13,24 @@
 
 extern "C"
 {
-    void* SXMEDIAPIPE_API createFaceLandmarkGpuGraph(bool bottomLeft, int maxFaces);
+    void* SXMEDIAPIPE_API sx_createFaceLandmarkGpuGraph(bool bottomLeft, int maxFaces);
 
-    void SXMEDIAPIPE_API destroyFaceLandmarkGpuGraph(void* graph);
+    void SXMEDIAPIPE_API sx_destroyFaceLandmarkGpuGraph(void* graph);
 
-    bool SXMEDIAPIPE_API start(void* graph, void* sharedContext);
+    bool SXMEDIAPIPE_API sx_startFaceGraph(void* graph, void* sharedContext);
 
-    bool SXMEDIAPIPE_API processTexture(void* graph, unsigned texture, int width, int height);
+    bool SXMEDIAPIPE_API sx_processTexture(void* graph, unsigned texture, int width, int height);
 
-    bool SXMEDIAPIPE_API processPixelbuffer(void* graph, void* pixelbuffer, int width, int height);
+    bool SXMEDIAPIPE_API sx_processPixelbuffer(void* graph, void* pixelbuffer, int width, int height);
 
-    bool SXMEDIAPIPE_API stop(void* graph);
+    bool SXMEDIAPIPE_API sx_stopFaceGraph(void* graph);
 
-    int SXMEDIAPIPE_API getFaceNum(void* graph);
+    int SXMEDIAPIPE_API sx_getFaceNum(void* graph);
 
-    float SXMEDIAPIPE_API getFaceLandmarkData(void* graph, int index, float** data, int* data_size, float** rect);
+    float SXMEDIAPIPE_API sx_getFaceLandmarkData(void* graph, int index, float** data, int* data_size, float** rect);
 
 #ifdef __ANDROID__
-    void SXMEDIAPIPE_API initAssetManager(JNIEnv* env, jobject context, const char* cache_path);
+    void SXMEDIAPIPE_API sx_initAssetManager(JNIEnv* env, jobject context, const char* cache_path);
 #endif
 }
 

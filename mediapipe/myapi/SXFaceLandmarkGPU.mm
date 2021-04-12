@@ -353,17 +353,17 @@ struct SXFaceLandmarkGPUGraph
 
 extern "C"
 {
-    void* createFaceLandmarkGpuGraph(bool bottomLeft, int maxFaces)
+    void* sx_createFaceLandmarkGpuGraph(bool bottomLeft, int maxFaces)
     {
         return new mediapipe::SXFaceLandmarkGPUGraph(bottomLeft, maxFaces);
     }
 
-    void destroyFaceLandmarkGpuGraph(void* graph)
+    void sx_destroyFaceLandmarkGpuGraph(void* graph)
     {
         delete (mediapipe::SXFaceLandmarkGPUGraph*)graph;
     }
 
-    bool start(void* graph, void* sharedContext)
+    bool sx_startFaceGraph(void* graph, void* sharedContext)
     {
         auto status = ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->startRun(sharedContext);
         if (!status.ok())
@@ -373,13 +373,13 @@ extern "C"
         return status.ok();
     }
 
-    bool processTexture(void* graph, unsigned texture, int width, int height)
+    bool sx_processTexture(void* graph, unsigned texture, int width, int height)
     {
         LOG(ERROR) << "Unsupport for current platform";
         return false;
     }
 
-    bool processPixelbuffer(void* graph, void* pixelbuffer, int width, int height) {
+    bool sx_processPixelbuffer(void* graph, void* pixelbuffer, int width, int height) {
         auto status = ((mediapipe::SXFaceLandmarkGPUGraph*)graph)
                           ->process((CVPixelBufferRef)pixelbuffer, width, height, mediapipe::SXColorFormat::kRGBA);
         if (!status.ok())
@@ -389,7 +389,7 @@ extern "C"
         return status.ok();
     }
 
-    bool stop(void* graph)
+    bool sx_stopFaceGraph(void* graph)
     {
         auto status = ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->stopUtilDone();
         if (!status.ok())
@@ -404,7 +404,7 @@ extern "C"
         return ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->getFaceSize();
     }
 
-    float getFaceLandmarkData(void* graph, int index, float** data, int* data_size, float** rect)
+    float sx_getFaceLandmarkData(void* graph, int index, float** data, int* data_size, float** rect)
     {
         auto datas = ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->getFaceLandmarkData(index);
         if (datas.empty())
