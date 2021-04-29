@@ -399,7 +399,7 @@ extern "C"
         return status.ok();
     }
 
-    int getFaceNum(void* graph)
+    int sx_getFaceNum(void* graph)
     {
         return ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->getFaceSize();
     }

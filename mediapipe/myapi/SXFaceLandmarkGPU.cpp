@@ -237,7 +237,7 @@ struct SXFaceLandmarkGPUGraph
             [=](std::shared_ptr<mediapipe::GlSyncPoint> sync_token) {});
 
         auto textureBuffer = absl::make_unique<mediapipe::GpuBuffer>(textureBufferSharedPtr);
-        size_t frame_timestamp_us = std::chrono::steady_clock::now().time_since_epoch().count();
+        int64_t frame_timestamp_us = std::chrono::steady_clock::now().time_since_epoch().count();
         MP_RETURN_IF_ERROR(mGraph.AddPacketToInputStream(
             INPUT_STREAM, mediapipe::Adopt(textureBuffer.release()).At(Timestamp(frame_timestamp_us))));
 
@@ -401,7 +401,7 @@ extern "C"
         return status.ok();
     }
 
-    bool stopFaceGraph(void* graph)
+    bool sx_stopFaceGraph(void* graph)
     {
         auto status = ((mediapipe::SXFaceLandmarkGPUGraph*)graph)->stopUtilDone();
         if (!status.ok())
