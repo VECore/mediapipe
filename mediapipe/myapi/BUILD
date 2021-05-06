@@ -14,7 +14,7 @@
 
 load(
     "@build_bazel_rules_apple//apple:ios.bzl",
-    "ios_application",
+    "ios_framework",
 )
 
 licenses(["notice"])
@@ -63,6 +63,17 @@ apple_binary(
     binary_type = "dylib",
     minimum_os_version = MIN_IOS_VERSION,
     platform_type = "ios",
+    deps = [
+        ":FaceMeshGpuLibraryIOS",
+    ],
+)
+
+ios_framework(
+    name = "Mediaflow",
+    bundle_id = "com.sx.mediaflow",
+    families = ["iphone"],
+    minimum_os_version = MIN_IOS_VERSION,
+    infoplists = [":Info.plist"],
     deps = [
         ":FaceMeshGpuLibraryIOS",
     ],
